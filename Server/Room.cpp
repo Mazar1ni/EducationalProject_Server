@@ -7,6 +7,7 @@ Room::Room(string nameRoom, SOCKET socket, string name, Rooms* rooms, Log* log) 
 	// added socket and name in array
 	socketClients.insert(socket);
 	namesClients.insert(name);
+	log->print(Log::info, "Room::Room - created room");
 }
 
 
@@ -22,6 +23,7 @@ void Room::openRoom(SOCKET socket, string name)
 	namesClients.insert(name);
 
 	sendMessagesAllClients("user " + name + " connected room@send", socket);
+	log->print(Log::info, "Room::openRoom - connected room");
 }
 
 void Room::leaveRoom(SOCKET socket, string name)
@@ -34,6 +36,8 @@ void Room::leaveRoom(SOCKET socket, string name)
 	namesClients.erase(nameIter);
 
 	send(socket, "@leave", sizeof("@leave"), NULL);
+
+	log->print(Log::info, "Room::leaveRoom - leave room");
 
 	// if name count = 0 then delete room
 	if (namesClients.size() == 0)
@@ -56,6 +60,8 @@ void Room::sendMessagesAllClients(string message, SOCKET owner)
 	}
 
 	message.erase(message.size() - strlen("@send"), strlen("@send"));
+
+	log->print(Log::info, "Room::sendMessagesAllClients - send message room: " + message);
 
 	// add message in history
 	historyMessage.push_back(message);

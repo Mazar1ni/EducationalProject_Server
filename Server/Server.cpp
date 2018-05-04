@@ -12,7 +12,7 @@ Server::Server(Log* log) : log(log)
 	}
 
 	// create socket
-	Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	Socket = socket(AF_INET, SOCK_STREAM, 6);
 
 	if (Socket == SOCKET_ERROR)
 	{
