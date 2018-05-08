@@ -18,9 +18,10 @@ Room* Rooms::createRoom(string name, SOCKET socket, string nameClient)
 	// create room
 	try
 	{
-		room = new Room(name, socket, nameClient, this);
+		room = new Room(name, socket, nameClient, make_shared<RoomDeleteListener*>(this));
 	}
-	catch (...) {
+	catch (...) 
+	{
 		Log::print(Log::warning, "Rooms::createRoom - Failed to create room class");
 	}
 	rooms.insert(make_pair(name, room));
@@ -55,6 +56,5 @@ vector<string> Rooms::getRooms()
 void Rooms::deleteRoom(string name)
 {
 	// remove room
-	auto it = rooms.find(name);
-	rooms.erase(it);
+	rooms.erase(rooms.find(name));
 }

@@ -4,10 +4,11 @@
 #include <vector>
 #include "Room.h"
 #include "Log.h"
+#include "RoomDeleteListener.h"
 
 using namespace std;
 
-class Rooms
+class Rooms : public RoomDeleteListener
 {
 public:
 	Rooms();

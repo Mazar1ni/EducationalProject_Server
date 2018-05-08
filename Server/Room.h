@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <set>
 #include "Log.h"
+#include "RoomDeleteListener.h"
 
 class Rooms;
 
@@ -14,7 +15,7 @@ using namespace std;
 class Room
 {
 public:
-	Room(string nameRoom, SOCKET socket, string name, Rooms* rooms);
+	Room(string nameRoom, SOCKET socket, string name, weak_ptr<RoomDeleteListener*> rooms);
 	~Room();
 	void openRoom(SOCKET socket, string name);
 	void leaveRoom(SOCKET socket, string name);
@@ -27,7 +28,7 @@ private:
 	string nameRoom;
 	set<SOCKET> socketClients;
 	set<string> namesClients;
-	Rooms* parent;
 	vector<string> historyMessage;
+	weak_ptr<RoomDeleteListener*> roomsPtr;
 };
 

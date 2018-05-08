@@ -2,8 +2,9 @@
 #include "Rooms.h"
 #include <iostream>
 
-Room::Room(string nameRoom, SOCKET socket, string name, Rooms* rooms) : nameRoom(nameRoom), parent(rooms)
+Room::Room(string nameRoom, SOCKET socket, string name, weak_ptr<RoomDeleteListener*> rooms) : nameRoom(nameRoom), roomsPtr(rooms)
 {
+	//roomsPtr(rooms);
 	// added socket and name in array
 	socketClients.insert(socket);
 	namesClients.insert(name);
@@ -38,7 +39,8 @@ void Room::leaveRoom(SOCKET socket, string name)
 	// if name count = 0 then delete room
 	if (namesClients.size() == 0)
 	{
-		parent->deleteRoom(nameRoom);
+		if(roomsPtr.expired())
+			(*roomsPtr.lock())->deleteRoom(nameRoom);
 		delete this;
 		return;
 	}

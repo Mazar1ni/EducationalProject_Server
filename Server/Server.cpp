@@ -85,5 +85,7 @@ void Server::command()
 		{
 			delete this;
 		}
+
+		message.clear();
 	}
 }
