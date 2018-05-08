@@ -2,6 +2,10 @@
 #include "Log.h"
 #include <time.h>
 
+ofstream Log::fout;
+Log::Priority Log::priority;
+mutex Log::mtx;
+
 Log::Log()
 {
 	//fout.open("log.txt");
@@ -9,19 +13,39 @@ Log::Log()
 
 Log::~Log()
 {
+	/*
 	if (fout.is_open())
 	{
 		fout.close();
 	}
+	*/
 }
 
 void Log::print(Priority priorityMessage, string message)
 {
 	lock_guard<mutex> lock(mtx);
 	bool isPrint = false;
-	string priorit;
+	string priorit; 
 	switch (priority)
 	{
+	case debug:
+		if (priorityMessage == debug)
+		{
+			isPrint = true;
+			priorit = "Debug";
+		}
+	case info:
+		if (priorityMessage == info)
+		{
+			isPrint = true;
+			priorit = "Info";
+		}
+	case warning:
+		if (priorityMessage == warning)
+		{
+			isPrint = true;
+			priorit = "Warning";
+		}
 	case error:
 		if (priorityMessage == error)
 		{
@@ -29,27 +53,6 @@ void Log::print(Priority priorityMessage, string message)
 			priorit = "Error";
 		}
 		break;
-	case warning:
-		if (priorityMessage == warning)
-		{
-			isPrint = true;
-			priorit = "Warning";
-		}
-		break;
-	case info:
-		if (priorityMessage == info)
-		{
-			isPrint = true;
-			priorit = "Info";
-		}
-		break;
-	case debug:
-		if (priorityMessage == debug)
-		{
-			isPrint = true;
-			priorit = "Debug";
-		}
-		break;	
 	}
 
 	if (isPrint == true)
@@ -80,5 +83,5 @@ void Log::print(Priority priorityMessage, string message)
 void Log::setPriority(Priority prior)
 {
 	priority = prior;
-	fout.open("log.txt");
+	fout.open("log.txt", ios::app);
 }

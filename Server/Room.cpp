@@ -2,18 +2,17 @@
 #include "Rooms.h"
 #include <iostream>
 
-Room::Room(string nameRoom, SOCKET socket, string name, Rooms* rooms, Log* log) : nameRoom(nameRoom), parent(rooms), log(log)
+Room::Room(string nameRoom, SOCKET socket, string name, Rooms* rooms) : nameRoom(nameRoom), parent(rooms)
 {
 	// added socket and name in array
 	socketClients.insert(socket);
 	namesClients.insert(name);
-	log->print(Log::info, "Room::Room - created room");
+	Log::print(Log::info, "Room::Room - created room");
 }
-
 
 Room::~Room()
 {
-	log->print(Log::info, "Room::~Room - delete room");
+	Log::print(Log::info, "Room::~Room - delete room");
 }
 
 void Room::openRoom(SOCKET socket, string name)
@@ -23,21 +22,18 @@ void Room::openRoom(SOCKET socket, string name)
 	namesClients.insert(name);
 
 	sendMessagesAllClients("user " + name + " connected room@send", socket);
-	log->print(Log::info, "Room::openRoom - connected room");
+	Log::print(Log::info, "Room::openRoom - connected room");
 }
 
 void Room::leaveRoom(SOCKET socket, string name)
 {
 	// remove socket and name
-	auto socketIter = socketClients.find(socket);
-	socketClients.erase(socketIter);
-
-	auto nameIter = namesClients.find(name);
-	namesClients.erase(nameIter);
+	socketClients.erase(socketClients.find(socket));
+	namesClients.erase(namesClients.find(name));
 
 	send(socket, "@leave", sizeof("@leave"), NULL);
 
-	log->print(Log::info, "Room::leaveRoom - leave room");
+	Log::print(Log::info, "Room::leaveRoom - leave room");
 
 	// if name count = 0 then delete room
 	if (namesClients.size() == 0)
@@ -61,7 +57,7 @@ void Room::sendMessagesAllClients(string message, SOCKET owner)
 
 	message.erase(message.size() - strlen("@send"), strlen("@send"));
 
-	log->print(Log::info, "Room::sendMessagesAllClients - send message room: " + message);
+	Log::print(Log::info, "Room::sendMessagesAllClients - send message room: " + message);
 
 	// add message in history
 	historyMessage.push_back(message);

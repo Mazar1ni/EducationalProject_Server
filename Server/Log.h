@@ -13,11 +13,11 @@ public:
 	Log();
 	~Log();
 
-	void print(Priority priorityMessage, string message);
-	void setPriority(Priority prior);
+	static void print(Priority priorityMessage, string message);
+	static void setPriority(Priority prior);
 
 private:
-	ofstream fout;
-	Priority priority;
-	mutex mtx;
+	static ofstream fout;
+	static Priority priority;
+	static mutex mtx;
 };

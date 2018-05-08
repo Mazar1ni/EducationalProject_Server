@@ -10,11 +10,11 @@
 
 using namespace std;
 
-class Clients
+class Client
 {
 public:
-	Clients(SOCKET socket, Rooms& r, set<string>& names, Log* log);
-	~Clients();
+	Client(SOCKET socket, Rooms& r, set<string>& names, set<SOCKET>& sockets);
+	~Client();
 
 private:
 	void readMessage();
@@ -26,6 +26,6 @@ private:
 	set<string>& namesClients;
 	Room* room = nullptr;
 	const int lenght = 1024;
-	Log* log;
+	set<SOCKET>& sockets;
 };
 

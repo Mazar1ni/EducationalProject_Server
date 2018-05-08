@@ -14,7 +14,7 @@ using namespace std;
 class Room
 {
 public:
-	Room(string nameRoom, SOCKET socket, string name, Rooms* rooms, Log* log);
+	Room(string nameRoom, SOCKET socket, string name, Rooms* rooms);
 	~Room();
 	void openRoom(SOCKET socket, string name);
 	void leaveRoom(SOCKET socket, string name);
@@ -29,6 +29,5 @@ private:
 	set<string> namesClients;
 	Rooms* parent;
 	vector<string> historyMessage;
-	Log* log;
 };
 

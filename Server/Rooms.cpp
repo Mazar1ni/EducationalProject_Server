@@ -1,6 +1,6 @@
 #include "Rooms.h"
 
-Rooms::Rooms(Log* log) : log(log)
+Rooms::Rooms()
 {
 }
 
@@ -18,10 +18,10 @@ Room* Rooms::createRoom(string name, SOCKET socket, string nameClient)
 	// create room
 	try
 	{
-		room = new Room(name, socket, nameClient, this, log);
+		room = new Room(name, socket, nameClient, this);
 	}
 	catch (...) {
-		log->print(Log::warning, "Rooms::createRoom - Failed to create room class");
+		Log::print(Log::warning, "Rooms::createRoom - Failed to create room class");
 	}
 	rooms.insert(make_pair(name, room));
 	return room;                                 

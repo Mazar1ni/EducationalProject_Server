@@ -6,21 +6,20 @@
 
 int main(int argc, char** argv)
 {
-	Log* log = new Log;
 	if (argc > 1)
 	{
 		if (strcmp(argv[1], "debug") == 0)
-			log->setPriority(Log::debug);
+			Log::setPriority(Log::debug);
 		else if (strcmp(argv[1], "info") == 0)
-			log->setPriority(Log::info);
+			Log::setPriority(Log::info);
 		else if (strcmp(argv[1], "warning") == 0)
-			log->setPriority(Log::warning);
+			Log::setPriority(Log::warning);
 		else if (strcmp(argv[1], "error") == 0)
-			log->setPriority(Log::error);
+			Log::setPriority(Log::error);
 	}
 
-	Server server(log);
-	server.connect();
+	Server* server = new Server;
+	server->connect();
 
 	return 0;
 }

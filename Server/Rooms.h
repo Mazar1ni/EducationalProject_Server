@@ -10,7 +10,7 @@ using namespace std;
 class Rooms
 {
 public:
-	Rooms(Log* log);
+	Rooms();
 	~Rooms();
 
 	Room* createRoom(string name, SOCKET socket, string nameClient);
@@ -20,6 +20,5 @@ public:
 
 private:
 	map<string, Room*> rooms;
-	Log* log;
 };
 

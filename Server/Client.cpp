@@ -1,27 +1,28 @@
-#include "Clients.h"
+#include "Client.h"
 
 static mutex namesMutex;
 static mutex roomsMutex;
 static mutex roomMutex;
+static mutex socketsMutex;
 
-Clients::Clients(SOCKET socket, Rooms& r, set<string>& names, Log* log) : socket(socket), rooms(r), namesClients(names), log(log)
+Client::Client(SOCKET socket, Rooms& r, set<string>& names, set<SOCKET>& sockets) : socket(socket), rooms(r), namesClients(names), sockets(sockets)
 {
-	log->print(Log::info, "Clients::readMessage - Connected client");
+	Log::print(Log::info, "Clients::readMessage - Connected client");
 
 	// create thread for listening to the client
 	try
 	{
-		thread client(&Clients::readMessage, this);
-		client.detach();	
+		thread client(&Client::readMessage, this);
+		client.detach();
 	}
 	catch (...) 
 	{
-		log->print(Log::warning, "Clients::Clients - Failed to create thread");
+		Log::print(Log::warning, "Clients::Clients - Failed to create thread");
 		return;
 	}
 }
 
-Clients::~Clients()
+Client::~Client()
 {
 	roomsMutex.lock();
 	// if the client is in the room, to leave it
@@ -38,15 +39,19 @@ Clients::~Clients()
 		namesClients.erase(it);
 	namesMutex.unlock();
 
+	socketsMutex.lock();
+	sockets.erase(socket);
+	socketsMutex.unlock();
+
 	closesocket(socket);
 
 	string debug;
 	debug = "Disconnected client ";
 	name == "" ? debug += "not authorized" : debug += name;
-	log->print(Log::info, "Clients::~Clients - " + debug);
+	Log::print(Log::info, "Clients::~Clients - " + debug);
 }
 
-void Clients::readMessage()
+void Client::readMessage()
 {
 	// array for messages received from the client
 	char* buffer = new char[lenght];
@@ -148,7 +153,7 @@ void Clients::readMessage()
 				if (room == nullptr)
 				{
 					send(socket, "@not_create", sizeof("@not_create"), NULL);
-					log->print(Log::debug, "Clients::readMessage - not created room");
+					Log::print(Log::debug, "Clients::readMessage - not created room");
 				}
 				// not create room
 				else
@@ -191,7 +196,7 @@ void Clients::readMessage()
 				{
 					// write to the client about the error
 					send(socket, "@not_open", sizeof("@not_open"), NULL);
-					log->print(Log::debug, "Clients::readMessage - not opened room");
+					Log::print(Log::debug, "Clients::readMessage - not opened room");
 				}
 			}
 			// leave room
@@ -302,7 +307,7 @@ void Clients::readMessage()
 				}
 			}
 
-			log->print(Log::debug, "Clients::readMessage - " + name + " : " + message);
+			Log::print(Log::debug, "Clients::readMessage - " + name + " : " + message);
 
 			memset(buffer, 0, lenght);
 		}
